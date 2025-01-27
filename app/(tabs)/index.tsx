@@ -1,12 +1,18 @@
+import { Task } from '@/db/schema';
+import { drizzle } from 'drizzle-orm/expo-sqlite';
+import { useSQLiteContext } from 'expo-sqlite';
 import React, { useState } from 'react';
 import {
     FlatList,
     StatusBar,
     StyleSheet,
     Text,
+    View,
     TouchableOpacity,
 } from 'react-native';
 import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
+import * as schema from "@/db/schema"
+import AddTaskComponent from '@/components/AddTaskComponent';
 
 type ItemData = {
     id: string;
@@ -43,6 +49,24 @@ const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => (
 
 const App = () => {
     const [selectedId, setSelectedId] = useState<string>();
+    const [data, setData] = useState<Task[]>()
+
+    const db = useSQLiteContext()
+
+    const drizzleDb = drizzle(db, { schema })
+
+    React.useEffect(() => {
+
+        const load = async () => {
+            const data = await drizzleDb.query.tasks.findMany()
+            console.log("data 🔴🔴🔴🔴", data)
+            setData(data)
+        }
+
+
+        load()
+    }, [])
+
 
     const renderItem = ({ item }: { item: ItemData }) => {
         const backgroundColor = item.id === selectedId ? '#6e3b6e' : '#f9c2ff';
@@ -61,12 +85,17 @@ const App = () => {
     return (
         <SafeAreaProvider>
             <SafeAreaView style={styles.container}>
-                <FlatList
-                    data={DATA}
-                    renderItem={renderItem}
-                    keyExtractor={item => item.id}
-                    extraData={selectedId}
-                />
+                <View className='flex-1'>
+
+                    {
+                        data?.map((e) => {
+                            return <Text key={e.id}>{e.name}</Text>
+                        })
+                    }
+
+                    <Text className='text-red-300'>Hello WOrld</Text>
+                    <AddTaskComponent />
+                </View>
             </SafeAreaView>
         </SafeAreaProvider>
     );

@@ -33,14 +33,32 @@
           "backgroundColor": "#ffffff"
         }
       ],
-       [
-      "expo-font",
-      {
-        "fonts": ["node_modules/@expo-google-fonts/poppins/Poppins_900Black.ttf","node_modules/@expo-google-fonts/inter/Inter_900Black.ttf"]
-      }
-    ]
-  ],
+      [
+        "expo-font",
+        {
+          "fonts": [
+            "node_modules/@expo-google-fonts/poppins/Poppins_900Black.ttf",
+            "node_modules/@expo-google-fonts/inter/Inter_900Black.ttf"
+          ]
+        }
+      ],
+      [
+        "expo-sqlite",
+        {
+          "enableFTS": true,
+          "useSQLCipher": true,
+          "android": {
 
+            "enableFTS": false,
+            "useSQLCipher": false
+          },
+          "ios": {
+
+            "customBuildFlags": ["-DSQLITE_ENABLE_DBSTAT_VTAB=1 -DSQLITE_ENABLE_SNAPSHOT=1"]
+          }
+        }
+      ]
+    ],
     "experiments": {
       "typedRoutes": true
     }
